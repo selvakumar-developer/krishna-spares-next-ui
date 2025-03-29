@@ -6,6 +6,7 @@ import bikeImage from "@/app/assets/images/bike.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import { setCookie } from "@/app/actions/cookie-action";
 import {
   Form,
   FormControl,
@@ -14,7 +15,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { ADMIN_USER_LOGIN } from "@/gql/admin";
+import { useToast } from "@/hooks/use-toast";
+import { ROUTE_PATH } from "@/lib/constant";
+import { useMutation } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -27,6 +33,21 @@ const formSchema = z.object({
 });
 
 export default function Login() {
+
+  const { push } = useRouter();
+  const { toast } = useToast();
+
+  const [adminLogin, { data, loading, error }] = useMutation(ADMIN_USER_LOGIN, {
+    // Optional configuration
+    onCompleted: (data) => {
+      console.log('User logged in:', data);
+    },
+    onError: (error) => {
+      console.error('Error creating user:', error);
+    },
+
+  });
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,12 +58,34 @@ export default function Login() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+    try {
+      const response = await adminLogin({
+        variables: {
+          adminUserSignIn: {
+            email: values.email,
+            password: values.password
+          }
+        }
+      });
+      const { adminUserSignIn } = response.data;
+      if (adminUserSignIn) {
+        toast({
+          title: 'Logged In Successfully',
+        })
+        const { accessToken, refreshToken } = adminUserSignIn;
+        await setCookie('accessToken', accessToken)
+        await setCookie('refreshToken', refreshToken)
+        push(ROUTE_PATH.ADMIN.dashboard)
+      }
+      console.log('Mutation result:', response);
+    } catch (mutationError) {
+      console.error('Submission error:', mutationError);
+    }
   }
-
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="flex items-center justify-center py-12">
@@ -79,13 +122,13 @@ export default function Login() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter your password" {...field} />
+                        <Input type="password" placeholder="Enter your password" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full">
+                <Button type="submit" isLoading={loading} className="w-full">
                   Login
                 </Button>
                 <Button variant="outline" className="w-full">
