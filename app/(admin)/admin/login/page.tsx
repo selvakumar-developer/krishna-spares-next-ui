@@ -24,9 +24,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const description =
-  "A login page with two columns. The first column has the login form with email and password. There's a Forgot your passwork link and a link to sign up if you do not have an account. The second column has a cover image.";
-
 const formSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email"),
   password: z.string().min(1, "Password is required"),
@@ -37,16 +34,7 @@ export default function Login() {
   const { push } = useRouter();
   const { toast } = useToast();
 
-  const [adminLogin, { data, loading, error }] = useMutation(ADMIN_USER_LOGIN, {
-    // Optional configuration
-    onCompleted: (data) => {
-      console.log('User logged in:', data);
-    },
-    onError: (error) => {
-      console.error('Error creating user:', error);
-    },
-
-  });
+  const [adminLogin, { loading }] = useMutation(ADMIN_USER_LOGIN);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
