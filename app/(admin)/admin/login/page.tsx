@@ -67,9 +67,8 @@ export default function Login() {
         const { accessToken, refreshToken } = adminUserSignIn;
         await setCookie('accessToken', accessToken)
         await setCookie('refreshToken', refreshToken)
-        push(ROUTE_PATH.ADMIN.dashboard)
+        push(ROUTE_PATH.ADMIN.portalDashboard)
       }
-      console.log('Mutation result:', response);
     } catch (mutationError) {
       console.error('Submission error:', mutationError);
     }

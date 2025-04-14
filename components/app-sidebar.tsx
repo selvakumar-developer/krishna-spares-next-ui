@@ -1,18 +1,18 @@
 "use client"
 
-import * as React from "react"
 import {
   AudioWaveform,
   BookOpen,
   Bot,
   Command,
-  Frame,
   GalleryVerticalEnd,
   Map,
   PieChart,
   Settings2,
   SquareTerminal,
+  UserRound
 } from "lucide-react"
+import * as React from "react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
@@ -25,6 +25,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { ROUTE_PATH } from "@/lib/constant"
 
 // This is sample data.
 const data = {
@@ -35,7 +36,7 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "KS Inc",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
@@ -139,9 +140,9 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      name: "Users",
+      url: ROUTE_PATH.ADMIN.users,
+      icon: UserRound,
     },
     {
       name: "Sales & Marketing",
