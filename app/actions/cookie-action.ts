@@ -11,3 +11,8 @@ export async function setCookie(
     const cookieStore = await cookies()
     cookieStore.set(name, value, { secure: true, httpOnly: true, ...options })
 }
+
+export async function getCookie(name: string) {
+    const cookieStore = await cookies()
+    return cookieStore.get(name)?.value
+}
