@@ -25,7 +25,7 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(async () 
   });
 
   // Error handling link to catch auth errors
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
+  const errorLink = onError(({ graphQLErrors }) => {
 
     if (graphQLErrors) {
 
