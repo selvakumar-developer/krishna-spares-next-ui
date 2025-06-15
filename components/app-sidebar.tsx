@@ -9,7 +9,6 @@ import {
   Map,
   PieChart,
   Settings2,
-  SquareTerminal,
   UserRound
 } from "lucide-react"
 import * as React from "react"
@@ -53,63 +52,39 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "User",
       url: "#",
-      icon: SquareTerminal,
+      icon: UserRound,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "User List",
+          url: ROUTE_PATH.ADMIN.users,
         },
       ],
     },
     {
-      title: "Models",
+      title: "Spares",
       url: "#",
       icon: Bot,
       items: [
         {
-          title: "Genesis",
+          title: "Spares List",
           url: "#",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Categories",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Suppliers",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "Supplier List",
           url: "#",
         },
       ],
