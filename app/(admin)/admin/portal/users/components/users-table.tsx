@@ -10,7 +10,7 @@ import {
 import { columns } from "./columns";
 
 function UsersTable({ usersPaginated }: PaginatedApiResponse) {
-  const { data, pagination } = usersPaginated;
+  const { data } = usersPaginated;
 
   const table = useReactTable({
     data: data,
