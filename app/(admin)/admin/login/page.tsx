@@ -30,7 +30,6 @@ const formSchema = z.object({
 });
 
 export default function Login() {
-
   const { push } = useRouter();
   const { toast } = useToast();
 
@@ -49,28 +48,32 @@ export default function Login() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+
     try {
       const response = await adminLogin({
         variables: {
           adminUserSignIn: {
             email: values.email,
-            password: values.password
-          }
-        }
+            password: values.password,
+          },
+        },
       });
       const { adminUserSignIn } = response.data;
       if (adminUserSignIn) {
         toast({
-          title: 'Logged In Successfully',
-        })
+          title: "Logged In Successfully",
+        });
         const { accessToken, refreshToken } = adminUserSignIn;
-        await setCookie('accessToken', accessToken)
-        await setCookie('refreshToken', refreshToken)
-        push(ROUTE_PATH.ADMIN.portalDashboard)
+        await setCookie("accessToken", accessToken);
+        await setCookie("refreshToken", refreshToken);
+        push(ROUTE_PATH.ADMIN.portalDashboard);
       }
-    } catch (mutationError) {
-      console.error('Submission error:', mutationError);
+    } catch {
+      toast({
+        title: "Login Failed",
+        description: "Please check your credentials and try again.",
+        variant: "destructive",
+      });
     }
   }
   return (
@@ -109,7 +112,11 @@ export default function Login() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Enter your password" {...field} />
+                        <Input
+                          type="password"
+                          placeholder="Enter your password"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
