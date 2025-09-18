@@ -124,7 +124,6 @@ function UserDetailsForm({ user }: UserDetailsFormProps) {
   };
 
   useEffect(() => {
-    console.log(user, "+++++");
     if (user) {
       form.reset({
         firstName: user?.fullName.split(" ")[0] || "",
