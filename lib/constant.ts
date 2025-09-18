@@ -11,6 +11,7 @@ export const ROUTE_PATH = {
     dashboard: DASHBOARD,
     usersList: `/${ADMIN}/${PORTAL}/${USERS}/users-list`,
     createUser: `/${ADMIN}/${PORTAL}/${USERS}/create`,
+    editUser: (id: string) => `/${ADMIN}/${PORTAL}/${USERS}/edit/${id}`,
     login: `/${ADMIN}/${LOGIN}`,
   },
 };
