@@ -14,6 +14,7 @@ export const GET_USERS_PAGINATED = gql`
   query UsersPaginated($paginationArgs: PaginationArgs) {
     usersPaginated(paginationArgs: $paginationArgs) {
       data {
+        _id
         email
         fullName
         mobileNumber

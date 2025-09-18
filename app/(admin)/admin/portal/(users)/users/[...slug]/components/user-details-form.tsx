@@ -5,9 +5,11 @@ import {
   CreateUserInput,
   useCreateUser,
 } from "@/gql/admin/api/users/useCreateUser";
+import { User } from "@/gql/admin/api/users/users";
 import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import AddressDetailsForm from "./address-details-form";
@@ -53,8 +55,14 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-function UserDetailsForm() {
+interface UserDetailsFormProps {
+  user?: User;
+}
+
+function UserDetailsForm({ user }: UserDetailsFormProps) {
   const { back } = useRouter();
+  const { slug } = useParams<{ slug: string[] }>();
+  const isEditMode = slug && slug[0] === "edit";
 
   const { createUser, loading } = useCreateUser();
 
@@ -115,12 +123,33 @@ function UserDetailsForm() {
     back();
   };
 
+  useEffect(() => {
+    console.log(user, "+++++");
+    if (user) {
+      form.reset({
+        firstName: user?.fullName.split(" ")[0] || "",
+        lastName: user?.fullName.split(" ")[1] || "",
+        email: user?.email || "",
+        phone: user?.mobileNumber || "",
+        street: user?.address?.[0].street || "",
+        city: user?.address?.[0].city || "",
+        state: user?.address?.[0].state || "",
+        zipCode: user?.address?.[0].postalCode || "",
+        country: user?.address?.[0].country || "",
+      });
+    }
+  }, []);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-cols-12 gap-3">
           <div className="col-span-12">
-            <PersonalDetailsForm form={form} />
+            <PersonalDetailsForm
+              form={form}
+              existingProfilePictureUrl={user?.profilePicture?.url}
+              isEditMode={isEditMode}
+            />
           </div>
           <div className="col-span-12">
             <AddressDetailsForm form={form} />
