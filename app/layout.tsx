@@ -1,6 +1,7 @@
 import Providers from "@/components/providers/Providers";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -37,10 +38,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-
           <Providers>{children}</Providers>
           <Toaster />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
