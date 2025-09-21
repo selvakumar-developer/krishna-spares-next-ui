@@ -20,7 +20,7 @@ interface AddressDetailsSectionProps {
     state: string;
     zipCode: string;
     country: string;
-    profilePicture: FileList;
+    profilePicture?: FileList;
   }>;
 }
 function AddressDetailsForm({ form }: AddressDetailsSectionProps) {

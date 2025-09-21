@@ -17,7 +17,7 @@ interface PersonalDetailsSectionProps {
     firstName: string;
     lastName: string;
     email: string;
-    profilePicture: FileList;
+    profilePicture?: FileList;
     phone: string;
     street: string;
     city: string;

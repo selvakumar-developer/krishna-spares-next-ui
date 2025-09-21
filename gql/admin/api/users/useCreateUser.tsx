@@ -1,6 +1,7 @@
 // hooks/useCreateUser.ts
 import { revalidateUsers } from "@/app/actions/admin/users";
 import { gql, useMutation } from "@apollo/client";
+import { FileEntity } from "../common/interface/file";
 
 const CREATE_USER = gql`
   mutation CreateUser($createUserInput: CreateUserInput!) {
@@ -32,14 +33,6 @@ export interface CreateUserInput {
     postalCode: string;
     country: string;
   };
-}
-
-export interface FileEntity {
-  id: string;
-  filename: string;
-  url: string;
-  mimetype: string;
-  size: number;
 }
 
 export interface CreateUserResponse {
