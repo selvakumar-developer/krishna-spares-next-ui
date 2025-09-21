@@ -5,6 +5,7 @@ import {
   CreateUserInput,
   useCreateUser,
 } from "@/gql/admin/api/users/useCreateUser";
+import { useUpdateUser } from "@/gql/admin/api/users/useUpdateUser";
 import { User } from "@/gql/admin/api/users/users";
 import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,18 +16,36 @@ import * as z from "zod";
 import AddressDetailsForm from "./address-details-form";
 import PersonalDetailsForm from "./personal-details-form";
 
-const formSchema = z.object({
-  // Personal Details
-  firstName: z.string().min(2, "First name must be at least 2 characters"),
-  lastName: z.string().min(2, "Last name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  profilePicture: z
+const createProfilePictureSchema = z
+  .instanceof(FileList)
+  .refine(
+    (files) => files && files.length === 1,
+    "Profile picture is required for new users"
+  )
+  .refine((files) => {
+    const file = files[0];
+    return file.size <= 5 * 1024 * 1024; // 5MB limit
+  }, "File size must be less than 5MB")
+  .refine((files) => {
+    const file = files[0];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+    ];
+    return allowedTypes.includes(file.type);
+  }, "Only JPEG, PNG, GIF, and WebP images are allowed");
+
+const updateProfilePictureSchema = z.union([
+  z.undefined(),
+  z
     .instanceof(FileList)
-    .refine((files) => {
-      if (!files || files.length === 0) return true; // Optional field
-      return files.length === 1;
-    }, "Please select only one file")
+    .refine(
+      (files) => !files || files.length === 0 || files.length === 1,
+      "Please select only one file"
+    )
     .refine((files) => {
       if (!files || files.length === 0) return true;
       const file = files[0];
@@ -44,16 +63,28 @@ const formSchema = z.object({
       ];
       return allowedTypes.includes(file.type);
     }, "Only JPEG, PNG, GIF, and WebP images are allowed"),
+]);
 
-  // Address Details
-  street: z.string().min(1, "Street address is required"),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(5, "Zip code must be at least 5 characters"),
-  country: z.string().min(1, "Country is required"),
-});
+const getFormSchema = (isEditMode: boolean) =>
+  z.object({
+    // Personal Details
+    firstName: z.string().min(2, "First name must be at least 2 characters"),
+    lastName: z.string().min(2, "Last name must be at least 2 characters"),
+    email: z.string().email("Invalid email address"),
+    phone: z.string().min(10, "Phone number must be at least 10 digits"),
+    profilePicture: isEditMode
+      ? updateProfilePictureSchema
+      : createProfilePictureSchema,
 
-type FormData = z.infer<typeof formSchema>;
+    // Address Details
+    street: z.string().min(1, "Street address is required"),
+    city: z.string().min(1, "City is required"),
+    state: z.string().min(1, "State is required"),
+    zipCode: z.string().min(5, "Zip code must be at least 5 characters"),
+    country: z.string().min(1, "Country is required"),
+  });
+
+type FormData = z.infer<ReturnType<typeof getFormSchema>>;
 
 interface UserDetailsFormProps {
   user?: User;
@@ -64,10 +95,11 @@ function UserDetailsForm({ user }: UserDetailsFormProps) {
   const { slug } = useParams<{ slug: string[] }>();
   const isEditMode = slug && slug[0] === "edit";
 
-  const { createUser, loading } = useCreateUser();
+  const { createUser, loading: createLoading } = useCreateUser();
+  const { updateUser, loading: updateLoading } = useUpdateUser();
 
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(getFormSchema(isEditMode)),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -84,12 +116,11 @@ function UserDetailsForm({ user }: UserDetailsFormProps) {
 
   const onSubmit = async (values: FormData) => {
     try {
-      const createUserInput: CreateUserInput = {
+      const baseUserInput = {
         fullName: `${values.firstName} ${values.lastName}`,
         email: values.email,
         mobileNumber: values.phone,
         password: values.email,
-        profilePicture: values.profilePicture[0],
         address: {
           street: values.street,
           city: values.city,
@@ -99,12 +130,29 @@ function UserDetailsForm({ user }: UserDetailsFormProps) {
         },
       };
 
-      const result = await createUser(createUserInput);
+      let result;
+      if (isEditMode) {
+        const updateUserInput = {
+          id: user?._id as string,
+          ...baseUserInput,
+          profilePicture: values.profilePicture?.[0],
+          keepExistingImage: !values.profilePicture?.length,
+        };
+        result = await updateUser(updateUserInput);
+      } else {
+        const createUserInput: CreateUserInput = {
+          ...baseUserInput,
+          profilePicture: (values.profilePicture as FileList)[0], // Safe to assert since validation ensures it exists
+        };
+        result = await createUser(createUserInput);
+      }
 
       if (result) {
         toast({
           title: "Success",
-          description: "User created successfully",
+          description: isEditMode
+            ? "User updated successfully"
+            : "User created successfully",
         });
         back();
       }
@@ -112,11 +160,11 @@ function UserDetailsForm({ user }: UserDetailsFormProps) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to create user. Please try again.",
+        description: isEditMode
+          ? "Failed to update user. Please try again."
+          : "Failed to create user. Please try again.",
       });
-      // Handle error (e.g., show toast notification)
     }
-    // Handle form submission
   };
 
   const handleCancel = () => {
@@ -157,7 +205,7 @@ function UserDetailsForm({ user }: UserDetailsFormProps) {
             <Button type="reset" variant={"outline"} onClick={handleCancel}>
               Cancel
             </Button>
-            <Button type="submit" isLoading={loading}>
+            <Button type="submit" isLoading={createLoading || updateLoading}>
               Save Changes
             </Button>
           </div>
