@@ -1,4 +1,4 @@
-import { getUserById } from "@/gql/admin/api/users/useUserById";
+import { getUserById } from "@/gql/admin/api/users/get-user-by-id";
 import { ROUTE_PATH } from "@/lib/constant";
 import { redirect } from "next/navigation";
 import UserDetailsForm from "./components/user-details-form";
