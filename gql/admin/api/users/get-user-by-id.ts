@@ -1,6 +1,6 @@
 import { query } from "@/lib/client";
 import { gql } from "@apollo/client";
-import { User } from "./users";
+import { User } from "./user";
 
 export interface GetUserByIdApiResponse {
   user: User;

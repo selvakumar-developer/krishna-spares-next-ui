@@ -4,6 +4,6 @@
 import { ROUTE_PATH } from "@/lib/constant";
 import { revalidatePath } from "next/cache";
 
-export async function revalidateUsers() {
-  revalidatePath(ROUTE_PATH.ADMIN.user.usersList); // Replace with your actual path
+export async function revalidateSuppliers() {
+  revalidatePath(ROUTE_PATH.ADMIN.supplier.suppliersList); // Replace with your actual path
 }

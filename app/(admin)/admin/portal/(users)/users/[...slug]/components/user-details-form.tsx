@@ -4,9 +4,9 @@ import { Form } from "@/components/ui/form";
 import {
   CreateUserInput,
   useCreateUser,
-} from "@/gql/admin/api/users/useCreateUser";
-import { useUpdateUser } from "@/gql/admin/api/users/useUpdateUser";
-import { User } from "@/gql/admin/api/users/users";
+} from "@/gql/admin/api/users/use-create-user";
+import { useUpdateUser } from "@/gql/admin/api/users/use-update-user";
+import { User } from "@/gql/admin/api/users/user";
 import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";

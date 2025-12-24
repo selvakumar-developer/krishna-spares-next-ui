@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
-import { PaginatedApiResponse } from "@/gql/admin/api/users/get-users-paginated";
+import { PaginatedApiResponse } from "@/gql/admin/api/suppliers/get-suppliers-paginated";
 import { ROUTE_PATH } from "@/lib/constant";
 import {
   getCoreRowModel,
@@ -13,8 +13,8 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { columns } from "./columns";
 
-function UsersTable({ usersPaginated }: PaginatedApiResponse) {
-  const { data } = usersPaginated;
+function SuppliersTable({ suppliersPaginated }: PaginatedApiResponse) {
+  const { data } = suppliersPaginated;
   const { push } = useRouter();
   const table = useReactTable({
     data: data,
@@ -23,19 +23,22 @@ function UsersTable({ usersPaginated }: PaginatedApiResponse) {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const handleNewUser = () => {
-    push(ROUTE_PATH.ADMIN.user.createUser);
+  const handleNewSupplier = () => {
+    push(ROUTE_PATH.ADMIN.supplier.createSupplier);
   };
 
   return (
     <div className="grid grid-cols-1 gap-2">
-      <Button size={"sm"} className="justify-self-end" onClick={handleNewUser}>
-        <Plus />
-        User
+      <Button
+        size={"sm"}
+        className="justify-self-end"
+        onClick={handleNewSupplier}
+      >
+        <Plus /> Supplier
       </Button>
       <DataTable columns={columns} data={data} />
       <DataTablePagination table={table} />
     </div>
   );
 }
-export default UsersTable;
+export default SuppliersTable;

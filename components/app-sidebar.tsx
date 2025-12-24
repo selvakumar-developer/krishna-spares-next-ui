@@ -59,7 +59,7 @@ const data = {
       items: [
         {
           title: "User List",
-          url: ROUTE_PATH.ADMIN.usersList,
+          url: ROUTE_PATH.ADMIN.user.usersList,
         },
       ],
     },
@@ -85,7 +85,7 @@ const data = {
       items: [
         {
           title: "Supplier List",
-          url: "#",
+          url: ROUTE_PATH.ADMIN.supplier.suppliersList,
         },
       ],
     },
@@ -116,7 +116,7 @@ const data = {
   projects: [
     {
       name: "Users",
-      url: ROUTE_PATH.ADMIN.usersList,
+      url: ROUTE_PATH.ADMIN.user.usersList,
       icon: UserRound,
     },
     {
