@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User } from "@/gql/admin/api/users/user";
+import { Supplier } from "@/gql/admin/api/suppliers/supplier";
 import { ROUTE_PATH } from "@/lib/constant";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
@@ -17,14 +17,10 @@ import { useRouter } from "next/navigation";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Supplier>[] = [
   {
     accessorKey: "fullName",
     header: "Name",
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
   },
   {
     accessorKey: "mobileNumber",
@@ -48,7 +44,7 @@ export const columns: ColumnDef<User>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const user = row.original;
+      const supplier = row.original;
       const router = useRouter();
 
       return (
@@ -62,7 +58,9 @@ export const columns: ColumnDef<User>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               onClick={() =>
-                router.push(ROUTE_PATH.ADMIN.user.editUser(user._id))
+                router.push(
+                  ROUTE_PATH.ADMIN.supplier.editSupplier(supplier._id)
+                )
               }
             >
               <Pencil className="mr-2 h-4 w-4" />
@@ -70,7 +68,7 @@ export const columns: ColumnDef<User>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => console.log("Delete:", user)}
+              onClick={() => console.log("Delete:", supplier)}
               className="text-red-600"
             >
               <Trash2 className="mr-2 h-4 w-4" />

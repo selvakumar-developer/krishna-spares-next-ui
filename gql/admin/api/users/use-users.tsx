@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { User } from "./users";
+import { User } from "./user";
 
 export interface UsersResponse {
   users: User[];

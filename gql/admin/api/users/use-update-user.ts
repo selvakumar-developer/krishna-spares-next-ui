@@ -2,7 +2,7 @@
 import { revalidateUsers } from "@/app/actions/admin/users";
 import { gql, useMutation } from "@apollo/client";
 import { FileEntity } from "../common/interface/file";
-import { CreateUserInput } from "./useCreateUser";
+import { CreateUserInput } from "./use-create-user";
 
 const UPDATE_USER = gql`
   mutation UpdateUser($updateUserInput: UpdateUserInput!) {

@@ -1,7 +1,7 @@
 import { query } from "@/lib/client";
 import { gql } from "@apollo/client";
 import { Pagination, PaginationArgs } from "../common/interface/pagination";
-import { User } from "./users";
+import { User } from "./user";
 
 export interface PaginatedApiResponse {
   usersPaginated: {
@@ -34,15 +34,19 @@ export const GET_USERS_PAGINATED = gql`
 `;
 
 export const getUsersPaginated = async (paginationArgs: PaginationArgs) => {
-  const { data, loading, error } = await query<PaginatedApiResponse>({
-    query: GET_USERS_PAGINATED,
-    variables: { paginationArgs },
-  });
+  try {
+    const { data, loading, error } = await query<PaginatedApiResponse>({
+      query: GET_USERS_PAGINATED,
+      variables: { paginationArgs },
+    });
 
-  return {
-    users: data?.usersPaginated.data || [],
-    pagination: data?.usersPaginated.pagination,
-    loading,
-    error,
-  };
+    return {
+      users: data?.usersPaginated.data || [],
+      pagination: data?.usersPaginated.pagination,
+      loading,
+      error,
+    };
+  } catch (error) {
+    throw error;
+  }
 };
